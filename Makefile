@@ -5,7 +5,7 @@ export ADDITIONAL_CFLAGS = -I$(THEOS_PROJECT_DIR)/include
 
 THEOS_PACKAGE_DIR_NAME = packages
 
-include theos/makefiles/common.mk
+include $(THEOS)/makefiles/common.mk
 
 SUBPROJECTS = displaycandysettings
 
