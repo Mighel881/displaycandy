@@ -2,10 +2,9 @@
 
 @implementation DCSettingsListController
 
-- (id)specifiers
-{
-	if(_specifiers == nil) {
-		_specifiers = [[self loadSpecifiersFromPlistName:@"DisplayCandySettings" target:self] retain];
+- (NSArray*)specifiers {
+	if (!_specifiers) {
+		_specifiers = [self loadSpecifiersFromPlistName:@"DisplayCandySettings" target:self];
 	}
 
 	_launchAnimation = [self specifierForID:@"launchAnimation"];
@@ -26,8 +25,7 @@
 	return _specifiers;
 }
 
-- (void)setAnimation:(id)animation specifier:(PSSpecifier *)specifier
-{
+- (void)setAnimation:(id)animation specifier:(PSSpecifier *)specifier {
 	[self setPreferenceValue:animation specifier:specifier];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -39,18 +37,15 @@
 		[self disableSwitchAnimationOptionsIfNeccessary];
 }
 
-- (BOOL)shouldEnableDirectionSpecifierForAnimation:(NSNumber *)animation
-{
-	NSArray *animations = [[NSArray alloc] initWithObjects:@1, @2, @9, @10, @11, @13, nil];
+- (BOOL)shouldEnableDirectionSpecifierForAnimation:(NSNumber *)animation {
+	NSArray *animations = @[@1, @2, @9, @10, @11, @13];
 
 	BOOL shouldEnable = [animations containsObject:animation];
-	[animations release];
 
 	return shouldEnable;
 }
 
-- (void)disableLaunchAnimationOptionsIfNeccessary
-{
+- (void)disableLaunchAnimationOptionsIfNeccessary {
 	BOOL shouldEnableDirection = [self shouldEnableDirectionSpecifierForAnimation:[self readPreferenceValue:_launchAnimation]];
 	[_launchAnimationDirection setProperty:@(shouldEnableDirection) forKey:@"enabled"];
 	[self reloadSpecifier:_launchAnimationDirection];
@@ -61,8 +56,7 @@
 
 }
 
-- (void)disableSuspendAnimationOptionsIfNeccessary
-{
+- (void)disableSuspendAnimationOptionsIfNeccessary {
 	BOOL shouldEnableDirection = [self shouldEnableDirectionSpecifierForAnimation:[self readPreferenceValue:_suspendAnimation]];
 	[_suspendAnimationDirection setProperty:@(shouldEnableDirection) forKey:@"enabled"];
 	[self reloadSpecifier:_suspendAnimationDirection];
@@ -74,8 +68,7 @@
 
 }
 
-- (void)disableSwitchAnimationOptionsIfNeccessary
-{
+- (void)disableSwitchAnimationOptionsIfNeccessary {
 	BOOL shouldEnableDirection = [self shouldEnableDirectionSpecifierForAnimation:[self readPreferenceValue:_switchAnimation]];
 	[_switchAnimationDirection setProperty:@(shouldEnableDirection) forKey:@"enabled"];
 	[self reloadSpecifier:_switchAnimationDirection];

@@ -9,25 +9,17 @@ static NSString * const kSettingsPlistPath = @"/User/Library/Preferences/com.pro
 
 @implementation DCSettings
 
-+ (DCSettings *)sharedSettings
-{
-	@synchronized([DCSettings class]) {
-		static DCSettings *sharedSettings = nil;
-
-		if (!sharedSettings) {
-			sharedSettings = [[self alloc] init];
-		}
-
-		return sharedSettings;
-	}
-
-	return nil;
++ (instancetype)sharedSettings {
+	static DCSettings *sharedInstance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		sharedInstance = [self new];
+	});
+	return sharedInstance;
 }
 
-- (id)init
-{
+- (instancetype)init {
 	self = [super init];
-
 	if (self) {
 		[self reload];
 	}
@@ -35,20 +27,17 @@ static NSString * const kSettingsPlistPath = @"/User/Library/Preferences/com.pro
 	return self;
 }
 
-- (BOOL)isEnabled
-{
+- (BOOL)isEnabled {
 	return ([_settings objectForKey:@"enabled"] ? [[_settings objectForKey:@"enabled"] boolValue] : YES);
 }
 
-- (DCTransition)transitionForMode:(DCTransitionMode)mode
-{
+- (DCTransition)transitionForMode:(DCTransitionMode)mode {
 	DCTransition transition = [self _transitionForMode:mode processRandom:YES];
 
 	return transition;
 }
 
-- (DCTransition)_transitionForMode:(DCTransitionMode)mode processRandom:(BOOL)processRandom
-{
+- (DCTransition)_transitionForMode:(DCTransitionMode)mode processRandom:(BOOL)processRandom {
 	static DCTransition validSwitchModes[11] = {DCTransitionDefault,
 												DCTransitionCube,
 												DCTransitionFlip,
@@ -92,9 +81,8 @@ static NSString * const kSettingsPlistPath = @"/User/Library/Preferences/com.pro
 	return transition;
 }
 
-- (DCTransitionDirection)directionForMode:(DCTransitionMode)mode
-{
-	DCTransition transition = [self _transitionForMode:mode processRandom:NO];	  
+- (DCTransitionDirection)directionForMode:(DCTransitionMode)mode {
+	DCTransition transition = [self _transitionForMode:mode processRandom:NO];
 	DCTransitionDirection direction;
 
 	switch (mode) {
@@ -119,8 +107,7 @@ static NSString * const kSettingsPlistPath = @"/User/Library/Preferences/com.pro
 	return direction;
 }
 
-- (NSInteger)suckPointForMode:(DCTransitionMode)mode
-{
+- (NSInteger)suckPointForMode:(DCTransitionMode)mode {
 	switch (mode) {
 		case DCTransitionModeLaunch:
 			return [[_settings objectForKey:@"launchAnimationSuckPoint"] intValue];
@@ -131,8 +118,7 @@ static NSString * const kSettingsPlistPath = @"/User/Library/Preferences/com.pro
 	}
 }
 
-- (CGFloat)durationForMode:(DCTransitionMode)mode
-{
+- (CGFloat)durationForMode:(DCTransitionMode)mode {
 	switch (mode) {
 		case DCTransitionModeLaunch:
 			return ([_settings objectForKey:@"launchAnimationDuration"] ? [[_settings objectForKey:@"launchAnimationDuration"] floatValue] : 0.5f);
@@ -145,10 +131,36 @@ static NSString * const kSettingsPlistPath = @"/User/Library/Preferences/com.pro
 	}
 }
 
-- (void)reload
-{
-	[_settings release];
-	_settings = [[NSDictionary alloc] initWithContentsOfFile:kSettingsPlistPath];
+- (void)reload {
+	@autoreleasepool {
+		// Reload Settings
+		if (_settings) {
+			_settings = nil;
+		}
+		CFPreferencesAppSynchronize(CFSTR("com.protosphere.displaycandy.settings"));
+		CFStringRef appID = CFSTR("com.protosphere.displaycandy.settings");
+		CFArrayRef keyList = CFPreferencesCopyKeyList(appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+
+		BOOL failed = NO;
+
+		if (keyList) {
+			_settings = (NSDictionary*)CFBridgingRelease(CFPreferencesCopyMultiple(keyList, appID, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+			CFRelease(keyList);
+
+			if (!_settings) {
+				//NSLog(@"[ReachApp] failure loading from CFPreferences");
+				failed = YES;
+			}
+		} else {
+			//NSLog(@"[ReachApp] failure loading keyList");
+			failed = YES;
+		}
+		CFRelease(appID);
+
+		if (failed) {
+			_settings = [NSDictionary dictionaryWithContentsOfFile:kSettingsPlistPath];
+		}
+	}
 }
 
 @end

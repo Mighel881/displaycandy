@@ -1,4 +1,4 @@
-#import "SpringBoard-Minimal.h"
+#import "headers.h"
 
 #import "DCTypes.h"
 #import "DCTransitionController.h"
@@ -25,10 +25,8 @@
 
 @implementation DCTransitionController
 
-- (DCTransitionController *)init
-{
+- (instancetype)init {
 	self = [super init];
-
 	if (self) {
 		// Set up the container view.
 		_view = [[UIView alloc] initWithFrame:[self transitionViewFrame]];
@@ -39,19 +37,7 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[_application release];
-	[_view release];
-	[_transitionView release];
-	[_fromView release];
-	[_toView release];
-
-	[super dealloc];
-}
-
-- (void)beginTransition:(NSInteger)transition
-{
+- (void)beginTransition:(NSInteger)transition {
 	// Rotate the container view depending on the orientation.
 	CGAffineTransform rotationTransform = [self transitionViewTransform];
 	[[self view] setTransform:rotationTransform];
@@ -77,7 +63,7 @@
 	[_transitionView setToView:[self toView]];
 
 	[_transitionView setDelegate:self];
-	[_transitionView setApplicationIdentifier:[[self application] displayIdentifier]];
+	[_transitionView setApplicationIdentifier:[[self application] bundleIdentifier]];
 	[_transitionView setDirection:direction];
 	[_transitionView setMode:[self mode]];
 
@@ -91,8 +77,7 @@
 	[_transitionView animateWithDuration:duration];
 }
 
-- (void)endTransition
-{
+- (void)endTransition {
 	[_transitionView removeFromSuperview];
 	[[_transitionView layer] removeAllAnimations];
 
@@ -101,14 +86,12 @@
 	}
 }
 
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
-{
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
 	[[self delegate] displayCandyAnimationFinishedWithMode:[self mode] app:[self application]];
 }
 
-- (CGRect)transitionViewFrame
-{
-	CGRect screenBounds = [[UIScreen mainScreen] bounds];
+- (CGRect)transitionViewFrame {
+	CGRect screenBounds = [UIScreen mainScreen].bounds;
 	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] activeInterfaceOrientation];
 
 	if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
@@ -118,8 +101,7 @@
 	}
 }
 
-- (CGAffineTransform)transitionViewTransform
-{
+- (CGAffineTransform)transitionViewTransform {
 	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] activeInterfaceOrientation];
 
 	switch (orientation) {
@@ -137,8 +119,7 @@
 	}
 }
 
-- (Class)classForCustomTransition:(NSInteger)transition
-{
+- (Class)classForCustomTransition:(NSInteger)transition {
 	switch (transition) {
 		case DCTransitionCover:
 			return [DCCoverTransitionView class];
@@ -157,17 +138,14 @@
 	}
 }
 
-- (BOOL)transitionIsBuiltIn:(NSString *)transition
-{
-	NSArray *builtInTransitions = [[NSArray alloc] initWithObjects:@"cube", @"oglFlip", @"pageCurl", @"pageUnCurl", @"rippleEffect", @"suckEffect", @"fade", @"cameraIris", nil];
-	BOOL isBuiltIn = [builtInTransitions containsObject:transition];
-	[builtInTransitions release];
+- (BOOL)transitionIsBuiltIn:(NSString *)transition {
+	NSArray *builtInTransitions = @[@"cube", @"oglFlip", @"pageCurl", @"pageUnCurl", @"rippleEffect", @"suckEffect", @"fade", @"cameraIris"];
+	BOOL isBuiltIn = [builtInTransitions containsObject:transition]
 
 	return isBuiltIn;
 }
 
-- (NSString *)transitionTypeForValue:(NSInteger)value
-{
+- (NSString *)transitionTypeForValue:(NSInteger)value {
 	switch (value) {
 		case 1:
 			return @"cube";

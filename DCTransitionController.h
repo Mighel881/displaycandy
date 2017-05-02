@@ -1,6 +1,4 @@
-#import <UIKit/UIKit.h>
-#import <QuartzCore/QuartzCore.h>
-#import "SpringBoard-Minimal.h"
+#import "headers.h"
 
 #import "DCTypes.h"
 #import "DCTransitionDelegate.h"
@@ -11,11 +9,11 @@
 }
 
 @property (nonatomic, assign) id<DCTransitionDelegate> delegate;
-@property (nonatomic, retain) SBApplication *application;
-@property (nonatomic, readonly, retain) UIView *view;
+@property (strong, nonatomic) SBApplication *application;
+@property (strong, nonatomic, readonly) UIView *view;
 @property (nonatomic, assign) DCTransitionMode mode;
-@property (nonatomic, retain) UIView *fromView;
-@property (nonatomic, retain) UIView *toView;
+@property (strong, nonatomic) UIView *fromView;
+@property (strong, nonatomic) UIView *toView;
 
 - (void)beginTransition:(NSInteger)transition;
 - (void)endTransition;

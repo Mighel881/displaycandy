@@ -1,4 +1,4 @@
-#import "SpringBoard-Minimal.h"
+#import "headers.h"
 #import "DCTypes.h"
 
 @class SBApplication;

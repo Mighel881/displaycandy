@@ -1,4 +1,11 @@
-#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+#import <GraphicsServices/GraphicsServices.h>
+#import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
+#import <SpringBoard/SBApplication.h>
+#import <SpringBoard/SBIconController.h>
+#import <SpringBoard/SBIconModel.h>
+#import <substrate.h>
 
 @interface UIApplication (SpringBoard)
 - (UIInterfaceOrientation)activeInterfaceOrientation;
@@ -62,18 +69,6 @@
 - (id)iconViewForIcon:(id)arg1;
 @end
 
-@interface SBIconModel : NSObject
-- (id)applicationIconForDisplayIdentifier:(id)displayIdentifier;
-- (id)leafIconForWebClipIdentifier:(id)webClipIdentifier;
-@end
-
-@interface SBIconController : NSObject
-+ (id)sharedInstance;
-- (UIView *)dockContainerView;
-- (SBIconView *)currentRootIconList;
-- (SBIconModel *)model;
-@end
-
 @interface SBDisplayStack : NSObject
 - (BOOL)isEmpty;
 - (void)pushDisplay:(id)display;
@@ -132,9 +127,8 @@
 - (void)setBusy:(BOOL)busy forReason:(id)reason;
 @end
 
-@interface SBApplication : SBDisplay
+@interface SBApplication ()
 @property(retain, nonatomic) SBProcess *process;
-- (NSString *)displayIdentifier;
 - (id)contextHostManager;
 - (id)contextHostViewForRequester:(id)requester;
 - (id)contextHostViewForRequester:(id)requester enableAndOrderFront:(BOOL)front;
@@ -142,8 +136,8 @@
 @end
 
 @interface SBApplicationController : NSObject
-+ (id)sharedInstance;
-- (SBApplication *)applicationWithDisplayIdentifier:(id)arg1;
++ (instancetype)sharedInstance;
+- (SBApplication*)applicationWithBundleIdentifier:(NSString*)identifier;
 @end
 
 @interface SBAppContextHostManager : NSObject
@@ -164,13 +158,13 @@
 
 @interface SBUIAnimationController : NSObject
 @property(readonly, nonatomic) UIView *containerView;
-@property(retain, nonatomic) SBApplication *deactivatingApp; 
+@property(retain, nonatomic) SBApplication *deactivatingApp;
 @property(retain, nonatomic) SBApplication *activatingApp;
 - (void)_noteAnimationDidCommit:(BOOL)arg1 withDuration:(double)arg2 afterDelay:(double)arg3;
 - (void)_noteAnimationDidFinish:(BOOL)arg1;
 @end
 
-@interface SBAppToAppTransitionController : SBUIAnimationController 
+@interface SBAppToAppTransitionController : SBUIAnimationController
 @property(retain, nonatomic) SBAppToAppTransitionView *transitionView;
 @end
 

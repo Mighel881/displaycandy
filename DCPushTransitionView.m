@@ -5,8 +5,7 @@
 
 @implementation DCPushTransitionView
 
-- (void)animateWithDuration:(CFTimeInterval)duration
-{
+- (void)animateWithDuration:(CFTimeInterval)duration {
 	CGPoint fromViewStartPoint;
 	CGPoint toViewEndPoint;
 	CGSize viewSize = [self frame].size;
@@ -35,20 +34,18 @@
 	[[self toView] setHidden:NO];
 
 	CABasicAnimation *pushFromView = [CABasicAnimation animationWithKeyPath:@"transform.translation"];
-	[pushFromView setFromValue:[NSValue valueWithCGPoint:fromViewStartPoint]];	  
+	[pushFromView setFromValue:[NSValue valueWithCGPoint:fromViewStartPoint]];
 	[pushFromView setToValue:[NSValue valueWithCGPoint:CGPointZero]];
 	[pushFromView setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
 	[pushFromView setDuration:duration];
 
 	CABasicAnimation *pushToView = [pushFromView copy];
 	[pushFromView setDelegate:[self delegate]];
-	[pushFromView setFromValue:[NSValue valueWithCGPoint:CGPointZero]];    
+	[pushFromView setFromValue:[NSValue valueWithCGPoint:CGPointZero]];
 	[pushFromView setToValue:[NSValue valueWithCGPoint:toViewEndPoint]];
 
 	[[[self fromView] layer] addAnimation:pushFromView forKey:nil];
 	[[[self toView] layer] addAnimation:pushToView forKey:nil];
-
-	[pushToView release];
 }
 
 @end

@@ -1,5 +1,4 @@
-#import <UIKit/UIKit.h>
-#import "SpringBoard-Minimal.h"
+#import "headers.h"
 #import "DCTransitionDelegate.h"
 
 @interface DCAppToAppWrapperView : SBAppToAppTransitionView <DCTransitionDelegate>

@@ -8,8 +8,8 @@
 @property (nonatomic, copy) NSString *applicationIdentifier;
 @property (nonatomic, assign) DCTransitionMode mode;
 @property (nonatomic, assign) DCTransitionDirection direction;
-@property (nonatomic, retain) UIView *fromView;
-@property (nonatomic, retain) UIView *toView;
+@property (strong, nonatomic) UIView *fromView;
+@property (strong, nonatomic) UIView *toView;
 
 - (void)animateWithDuration:(CFTimeInterval)duration;
 

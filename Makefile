@@ -1,21 +1,17 @@
-export ARCHS = armv7
-export TARGET = iphone:clang:latest:5.0
-export ADDITIONAL_CFLAGS = -I$(THEOS_PROJECT_DIR)/include
-#export DEBUG = 1
+export TARGET = iphone:9.3
 
-THEOS_PACKAGE_DIR_NAME = packages
+CFLAGS = -fobjc-arc
+
+INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
-SUBPROJECTS = displaycandysettings
-
 TWEAK_NAME = DisplayCandy
-DisplayCandy_FILES = DCFunctions.m Tweak.x DCTransitionController.m DCTransitionView.m DCAppToAppWrapperView.x DCBuiltInTransitionView.m DCCoverTransitionView.m DCRevealTransitionView.m DCPushTransitionView.m DCTVTubeTransitionView.m DCSwingTransitionView.m DCZoomTransitionView.x DCDisplayStackManager.x DCSettings.m
+DisplayCandy_FILES = $(wildcard *.xm) $(wildcard *.x) $(wildcard *.m)
 DisplayCandy_FRAMEWORKS = UIKit QuartzCore CoreGraphics
 DisplayCandy_PRIVATE_FRAMEWORKS = GraphicsServices
 
+SUBPROJECTS = displaycandysettings
+
 include $(THEOS_MAKE_PATH)/aggregate.mk
 include $(THEOS_MAKE_PATH)/tweak.mk
-
-after-install::
-	install.exec "killall -9 SpringBoard"

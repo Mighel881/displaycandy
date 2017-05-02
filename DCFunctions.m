@@ -4,8 +4,7 @@
 
 #include "DCFunctions.h"
 
-CGAffineTransform DCRotationTransformForCurrentOrientation()
-{
+CGAffineTransform DCRotationTransformForCurrentOrientation() {
 	switch ([[UIApplication sharedApplication] activeInterfaceOrientation]) {
 		case UIInterfaceOrientationPortraitUpsideDown:
 			return CGAffineTransformMakeRotation(M_PI);

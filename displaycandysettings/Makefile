@@ -1,4 +1,6 @@
-include theos/makefiles/common.mk
+CFLAGS = -fobjc-arc
+
+include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = DisplayCandySettings
 DisplayCandySettings_FILES = DCSettingsListController.m

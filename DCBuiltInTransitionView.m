@@ -16,8 +16,7 @@
 
 @implementation DCBuiltInTransitionView
 
-- (void)animateWithDuration:(CFTimeInterval)duration
-{
+- (void)animateWithDuration:(CFTimeInterval)duration {
 	CATransition *animation = [CATransition animation];
 	[animation setDelegate:[self delegate]];
 	[animation setValue:@([self mode]) forKey:@"mode"];
@@ -35,7 +34,7 @@
 							 ? [self homeButtonPointForInterfaceOrientation:[[UIApplication sharedApplication] activeInterfaceOrientation]]
 							 : CGPointMake(viewSize.width / 2, viewSize.height / 2);
 
-		[suckFilter setValue:[NSValue valueWithCGPoint:suckPoint] forKey:@"inputPosition"];		   
+		[suckFilter setValue:[NSValue valueWithCGPoint:suckPoint] forKey:@"inputPosition"];
 		[animation setFilter:suckFilter];
 	}
 
@@ -43,15 +42,7 @@
 	[[self layer] addAnimation:animation forKey:nil];
 }
 
-- (void)dealloc
-{
-	[_type release];
-	
-	[super dealloc];
-}
-
-- (NSString *)stringForDirection:(DCTransitionDirection)direction
-{
+- (NSString *)stringForDirection:(DCTransitionDirection)direction {
 	switch (direction) {
 		case DCTransitionDirectionLeft:
 			return @"fromRight";
@@ -66,9 +57,8 @@
 	}
 }
 
-- (CGPoint)homeButtonPointForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	CGSize viewSize = [self frame].size;	
+- (CGPoint)homeButtonPointForInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	CGSize viewSize = [self frame].size;
 
 	switch (interfaceOrientation) {
 		case UIInterfaceOrientationPortrait:

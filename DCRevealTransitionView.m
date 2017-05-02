@@ -5,8 +5,7 @@
 
 @implementation DCRevealTransitionView
 
-- (void)animateWithDuration:(CFTimeInterval)duration
-{
+- (void)animateWithDuration:(CFTimeInterval)duration {
 	CGPoint endPoint;
 	CGSize viewSize = [self frame].size;
 
@@ -21,7 +20,7 @@
 		case DCTransitionDirectionUp:
 			endPoint = CGPointMake(0, -viewSize.height);
 			break;
-		
+
 		case DCTransitionDirectionDown:
 			endPoint = CGPointMake(0, viewSize.height);
 	}
@@ -32,7 +31,7 @@
 	CABasicAnimation *reveal = [CABasicAnimation animationWithKeyPath:@"transform.translation"];
 	[reveal setDelegate:[self delegate]];
 	[reveal setValue:@([self mode]) forKey:@"mode"];
-	[reveal setFromValue:[NSValue valueWithCGPoint:CGPointZero]];	 
+	[reveal setFromValue:[NSValue valueWithCGPoint:CGPointZero]];
 	[reveal setToValue:[NSValue valueWithCGPoint:endPoint]];
 	[reveal setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut]];
 	[reveal setDuration:duration];

@@ -1,36 +1,36 @@
 #ifndef DC_TYPES_H
 #define DC_TYPES_H
 
-typedef enum DCTransition {
-	DCTransitionDefault,
-	DCTransitionCube,
-	DCTransitionFlip,
-	DCTransitionPageCurl,
-	DCTransitionPageUncurl,
-	DCTransitionRipple,
-	DCTransitionSuck,
-	DCTransitionTVTube,
-	DCTransitionFade,
-	DCTransitionCover,
-	DCTransitionReveal,
-	DCTransitionPush,
-	DCTransitionCameraIris,
-	DCTransitionSwing,
-	DCTransitionZoomFromIcon,
-	DCTransitionRandom = 100
-} DCTransition;
+typedef NS_ENUM(NSInteger, DCTransition) {
+		DCTransitionDefault,
+		DCTransitionCube,
+		DCTransitionFlip,
+		DCTransitionPageCurl,
+		DCTransitionPageUncurl,
+		DCTransitionRipple,
+		DCTransitionSuck,
+		DCTransitionTVTube,
+		DCTransitionFade,
+		DCTransitionCover,
+		DCTransitionReveal,
+		DCTransitionPush,
+		DCTransitionCameraIris,
+		DCTransitionSwing,
+		DCTransitionZoomFromIcon,
+		DCTransitionRandom = 100
+};
 
-typedef enum DCTransitionMode {
-	DCTransitionModeLaunch,
-	DCTransitionModeSuspend,
-	DCTransitionModeSwitch
-} DCTransitionMode;
+typedef NS_ENUM(NSInteger, DCTransitionMode) {
+		DCTransitionModeLaunch,
+		DCTransitionModeSuspend,
+		DCTransitionModeSwitch
+};
 
-typedef enum DCTransitionDirection {
-	DCTransitionDirectionLeft,
-	DCTransitionDirectionRight,
-	DCTransitionDirectionUp,
-	DCTransitionDirectionDown
-} DCTransitionDirection;
+typedef NS_ENUM(NSInteger, DCTransitionDirection) {
+		DCTransitionDirectionLeft,
+		DCTransitionDirectionRight,
+		DCTransitionDirectionUp,
+		DCTransitionDirectionDown
+};
 
 #endif // DC_TYPES_H

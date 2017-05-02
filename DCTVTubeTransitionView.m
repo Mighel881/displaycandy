@@ -5,8 +5,7 @@
 
 @implementation DCTVTubeTransitionView
 
-- (void)animateWithDuration:(CFTimeInterval)duration
-{
+- (void)animateWithDuration:(CFTimeInterval)duration {
 	isLaunching = ([self mode] == DCTransitionModeLaunch);
 	stepDuration = duration / 2;
 
@@ -15,14 +14,13 @@
 	[black setAlpha:(isLaunching ? 1.0f : 0.0f)];
 
 	[self addSubview:black];
-	[black release];
 
 	[[self toView] setHidden:NO];
 
 	CABasicAnimation *fade = [CABasicAnimation animationWithKeyPath:@"opacity"];
 	[fade setFromValue:@(isLaunching ? 0.0f : 1.0f)];
 	[fade setToValue:@(isLaunching ? 1.0f : 0.0f)];
-	[fade setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];    
+	[fade setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
 	[fade setDuration:duration];
 
 	CGSize viewSize = [self frame].size;
@@ -34,7 +32,7 @@
 	verticalSquashTransform = CATransform3DMakeScale(1.0f, 2.0f / viewSize.height, 1.0f);
 
 	// Choose the correct origin & destination transform based on whether the app is being opened or closed.
-	CATransform3D *fromTransform = (isLaunching ? &horizontalSquashTransform : &originalTransform);    
+	CATransform3D *fromTransform = (isLaunching ? &horizontalSquashTransform : &originalTransform);
 	CATransform3D *toTransform = (isLaunching ? &horizontalExpandTransform : &verticalSquashTransform);
 
 	// Concatenate the view's original transform with the animation transform to preserve rotation.
@@ -48,7 +46,7 @@
 	[stepOne setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
 	[stepOne setDuration:stepDuration];
 	[stepOne setFillMode:kCAFillModeForwards];
-	[stepOne setRemovedOnCompletion:NO];		
+	[stepOne setRemovedOnCompletion:NO];
 
 	[self bringSubviewToFront:viewToTransform];
 	[[viewToTransform layer] addAnimation:stepOne forKey:nil];
@@ -56,8 +54,7 @@
 	[[black layer] addAnimation:fade forKey:nil];
 }
 
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag
-{
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
 	UIView *viewToTransform = (isLaunching ? [self toView] : [self fromView]);
 
 	CATransform3D *toTransform = (isLaunching ? &originalTransform : &horizontalSquashTransform);
@@ -71,7 +68,7 @@
 	[stepTwo setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
 	[stepTwo setDuration:stepDuration];
 	[stepTwo setFillMode:kCAFillModeForwards];
-	[stepTwo setRemovedOnCompletion:NO];		
+	[stepTwo setRemovedOnCompletion:NO];
 
 	[[viewToTransform layer] addAnimation:stepTwo forKey:nil];
 }

@@ -1,20 +1,18 @@
 #import "DCZoomTransitionView.h"
-#import "SpringBoard-Minimal.h"
+#import "headers.h"
 
 @implementation DCZoomTransitionView
 
-- (void)animateWithDuration:(CFTimeInterval)duration
-{
-	id iconModel = nil;
-	object_getInstanceVariable([%c(SBIconController) sharedInstance], "_iconModel", (void **)&iconModel);
+- (void)animateWithDuration:(CFTimeInterval)duration {
+	SBIconModel *iconModel = MSHookIvar<SBIconModel*>([%c(SBIconController) sharedInstance], "_iconModel");
 
-	SBApplication *application = [[%c(SBApplicationController) sharedInstance] applicationWithDisplayIdentifier:[self applicationIdentifier]];
+	SBApplication *application = [[%c(SBApplicationController) sharedInstance] applicationWithBundleIdentifier:[self applicationIdentifier]];
 	unsigned urlActivationFlag = (%c(SBUIAnimationController) ? 4 : 3);
 	NSString *url = [[application activationValue:urlActivationFlag] absoluteString];
 
 	id applicationIcon = (%c(SBUIAnimationController) && [url hasPrefix:@"webclip:"])
 						 ? [iconModel leafIconForWebClipIdentifier:[url substringFromIndex:8]]
-						 : [iconModel applicationIconForDisplayIdentifier:[self applicationIdentifier]];
+						 : [iconModel applicationIconForBundleIdentifier:[self applicationIdentifier]];
 
 	UIImageView *iconView = [[[%c(SBIconViewMap) homescreenMap] iconViewForIcon:applicationIcon] iconImageView];
 
@@ -40,7 +38,7 @@
 	{
 		UIView *homescreenView = (isLaunching ? [self fromView] : [self toView]);
 
-		CATransform3D homescreenViewOriginalTransform = [[homescreenView layer] transform];	
+		CATransform3D homescreenViewOriginalTransform = [[homescreenView layer] transform];
 		CATransform3D homescreenViewZoomTransform = CATransform3DMakeScale(scaleFactor, scaleFactor, 1.0f);
 		homescreenViewZoomTransform = CATransform3DTranslate(homescreenViewZoomTransform, sizeFromIconToScreenCenter.width, sizeFromIconToScreenCenter.height - appViewYTranslation, 0.0f);
 		homescreenViewZoomTransform = CATransform3DConcat(homescreenViewOriginalTransform, homescreenViewZoomTransform);
@@ -56,11 +54,11 @@
 		[[homescreenView layer] addAnimation:scaleHomescreenAnimation forKey:nil];
 	}
 
-	// Application animation.	
+	// Application animation.
 	{
 		UIView *appView = (isLaunching ? [self toView] : [self fromView]);
 
-		CATransform3D appViewOriginalTransform = [[appView layer] transform];	
+		CATransform3D appViewOriginalTransform = [[appView layer] transform];
 		CATransform3D appViewZoomTransform = CATransform3DMakeTranslation(-sizeFromIconToScreenCenter.width, -sizeFromIconToScreenCenter.height + appViewYTranslation, 0.0f);
 		appViewZoomTransform = CATransform3DScale(appViewZoomTransform, (1.0f / scaleFactor), (1.0f / scaleFactor), 1.0f);
 		appViewZoomTransform = CATransform3DConcat(appViewOriginalTransform, appViewZoomTransform);

@@ -1,6 +1,4 @@
-#import <objc/runtime.h>
-#import <GraphicsServices/GraphicsServices.h>
-#import "SpringBoard-Minimal.h"
+#import "headers.h"
 #import "DCAppToAppWrapperView.h"
 #import "DCTransitionController.h"
 #import "DCSettings.h"
@@ -19,10 +17,8 @@ static char kTransitionControllerKey;
 
 %subclass DCAppToAppWrapperView : SBAppToAppTransitionView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
 	self = %orig;
-
 	if (self) {
 		// Create the transition view.
 		DCTransitionController *transitionController = [[DCTransitionController alloc] init];
@@ -32,57 +28,51 @@ static char kTransitionControllerKey;
 
 		[self addSubview:[transitionController view]];
 
-		objc_setAssociatedObject(self, &kTransitionControllerKey, transitionController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);		   
-		[transitionController release];
+		objc_setAssociatedObject(self, &kTransitionControllerKey, transitionController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 	}
 
 	return self;
 }
 
 %new
-- (DCTransition)transition
-{
+- (DCTransition)transition {
 	return [objc_getAssociatedObject(self, &kTransitionKey) intValue];
 }
 
 %new
-- (void)setTransition:(DCTransition)transition
-{
-	objc_setAssociatedObject(self, &kTransitionKey, @(transition), OBJC_ASSOCIATION_RETAIN_NONATOMIC);	
+- (void)setTransition:(DCTransition)transition {
+	objc_setAssociatedObject(self, &kTransitionKey, @(transition), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)setFromView:(UIView *)fromView
-{
+- (void)setFromView:(UIView *)fromView {
 	%orig;
 
 	// Rotate the view depending on the orientation.
 	CGAffineTransform rotationTransform = DCRotationTransformForCurrentOrientation();
 	[fromView setTransform:rotationTransform];
 
-	[fromView setBackgroundColor:[UIColor blackColor]];    
+	[fromView setBackgroundColor:[UIColor blackColor]];
 
-	DCTransitionController *transitionController = objc_getAssociatedObject(self, &kTransitionControllerKey);	 
+	DCTransitionController *transitionController = objc_getAssociatedObject(self, &kTransitionControllerKey);
 	[transitionController setFromView:fromView];
 }
 
-- (void)setToView:(UIView *)toView
-{
+- (void)setToView:(UIView *)toView {
 	%orig;
-	
+
 	// Rotate the view depending on the orientation.
 	CGAffineTransform rotationTransform = DCRotationTransformForCurrentOrientation();
 	[toView setTransform:rotationTransform];
 
-	[toView setBackgroundColor:[UIColor blackColor]];	 
+	[toView setBackgroundColor:[UIColor blackColor]];
 
-	DCTransitionController *transitionController = objc_getAssociatedObject(self, &kTransitionControllerKey);	 
+	DCTransitionController *transitionController = objc_getAssociatedObject(self, &kTransitionControllerKey);
 	[transitionController setToView:toView];
 }
 
-- (void)beginTransition
-{
+- (void)beginTransition {
 	// Start the animation
-	DCTransitionController *transitionController = objc_getAssociatedObject(self, &kTransitionControllerKey); 
+	DCTransitionController *transitionController = objc_getAssociatedObject(self, &kTransitionControllerKey);
 	[transitionController beginTransition:[self transition]];
 
 	if ([self respondsToSelector:@selector(_animationBegan)]) { // iOS >= 6.0
@@ -91,13 +81,12 @@ static char kTransitionControllerKey;
 	} else {
 		// Tell SpringBoard that the animation has started.
 		Ivar animatingIvar = class_getInstanceVariable([self class], "_animating");
-		BOOL *animating = (BOOL *)((char *)self + ivar_getOffset(animatingIvar));
+		BOOL *animating = ((BOOL*)(__bridge void*)self) + ivar_getOffset(animatingIvar);
 		*animating = YES;
 	}
 }
 
-- (void)endTransition
-{
+- (void)endTransition {
 	DCTransitionController *transitionController = objc_getAssociatedObject(self, &kTransitionControllerKey);
 
 	[[transitionController view] removeFromSuperview];
@@ -105,19 +94,18 @@ static char kTransitionControllerKey;
 }
 
 %new
-- (void)displayCandyAnimationFinishedWithMode:(DCTransitionMode)mode app:(SBApplication *)app
-{
+- (void)displayCandyAnimationFinishedWithMode:(DCTransitionMode)mode app:(SBApplication *)app {
 	if ([self respondsToSelector:@selector(_animationBegan)]) { // iOS >= 6.0
 		[self _animationEnded];
 		[self _notifyDelegateThatAnimationIsDone];
 	} else {
 		// Tell SpringBoard that the animation has finished.
 		Ivar animatingIvar = class_getInstanceVariable([self class], "_animating");
-		BOOL *animating = (BOOL *)((char *)self + ivar_getOffset(animatingIvar));
+		BOOL *animating = ((BOOL*)(__bridge void*)self)+ ivar_getOffset(animatingIvar);
 		*animating = NO;
 
 		Ivar workspaceIsReadyForAnimationCleanupIvar = class_getInstanceVariable([self class], "_workspaceIsReadyForAnimationCleanup");
-		BOOL *workspaceIsReadyForAnimationCleanup = (BOOL *)((char *)self + ivar_getOffset(workspaceIsReadyForAnimationCleanupIvar));
+		BOOL *workspaceIsReadyForAnimationCleanup = ((BOOL*)(__bridge void*)self) + ivar_getOffset(workspaceIsReadyForAnimationCleanupIvar);
 
 		if (*workspaceIsReadyForAnimationCleanup) {
 			[[self delegate] appTransitionViewAnimationDidStop:self];

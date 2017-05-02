@@ -3,10 +3,8 @@
 
 @implementation DCTransitionView
 
-- (void)setFromView:(UIView *)view
-{
-	[_fromView release];
-	_fromView = [view retain];
+- (void)setFromView:(UIView *)view {
+	_fromView = view;
 
 	[_fromView setOpaque:YES];
 	[_fromView setCenter:[self center]];
@@ -14,10 +12,8 @@
 	[self addSubview:_fromView];
 }
 
-- (void)setToView:(UIView *)view
-{
-	[_toView release];
-	_toView = [view retain];
+- (void)setToView:(UIView *)view {
+	_toView = view;
 
 	[_toView setOpaque:YES];
 	[_toView setHidden:YES];
@@ -26,14 +22,8 @@
 	[self addSubview:_toView];
 }
 
-- (void)animateWithDuration:(CFTimeInterval)duration {}
-
-- (void)dealloc
-{
-	[_fromView release];
-	[_toView release];
-
-	[super dealloc];
+- (void)animateWithDuration:(CFTimeInterval)duration {
+	
 }
 
 @end

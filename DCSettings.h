@@ -6,7 +6,7 @@
 	NSDictionary *_settings;
 }
 
-+ (DCSettings *)sharedSettings;
++ (instancetype)sharedSettings;
 - (BOOL)isEnabled;
 - (DCTransition)transitionForMode:(DCTransitionMode)mode;
 - (DCTransitionDirection)directionForMode:(DCTransitionMode)mode;

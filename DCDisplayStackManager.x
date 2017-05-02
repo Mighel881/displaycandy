@@ -4,10 +4,9 @@ static NSMutableArray *displayStacks;
 
 %hook SBDisplayStack
 
-- (id)init
-{
-	if ((self = %orig))
-	{
+- (instancetype)init {
+	self = %orig;
+	if (self) {
 		[displayStacks addObject:self];
 	}
 
@@ -16,47 +15,34 @@ static NSMutableArray *displayStacks;
 
 %end
 
-%ctor
-{
+%ctor {
 	displayStacks = [[NSMutableArray alloc] init];
 }
 
 @implementation DCDisplayStackManager
 
-static DCDisplayStackManager *sharedDisplayStackManager = nil;
-
-+ (DCDisplayStackManager *)sharedManager
-{
-	@synchronized([DCDisplayStackManager class])
-	{
-		if (!sharedDisplayStackManager)
-		{
-			sharedDisplayStackManager = [[self alloc] init];
-		}
-
-		return sharedDisplayStackManager;
-	}
-
-	return nil;
++ (instancetype)sharedManager {
+	static DCDisplayStackManager *sharedInstance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		sharedInstance = [self new];
+	});
+	return sharedInstance;
 }
 
-- (SBDisplayStack *)preActivateDisplayStack
-{
+- (SBDisplayStack *)preActivateDisplayStack {
 	return [displayStacks objectAtIndex:0];
 }
 
-- (SBDisplayStack *)activeDisplayStack
-{
+- (SBDisplayStack *)activeDisplayStack {
 	return [displayStacks objectAtIndex:1];
 }
 
-- (SBDisplayStack *)suspendingDisplayStack
-{
+- (SBDisplayStack *)suspendingDisplayStack {
 	return [displayStacks objectAtIndex:2];
 }
 
-- (SBDisplayStack *)suspendedEventOnlyDisplayStack
-{
+- (SBDisplayStack *)suspendedEventOnlyDisplayStack {
 	return [displayStacks objectAtIndex:3];
 }
 

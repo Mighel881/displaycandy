@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "SpringBoard-Minimal.h"
+#import "headers.h"
 
 @interface DCDisplayStackManager : NSObject
 
